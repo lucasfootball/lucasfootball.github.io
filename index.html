@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucas Morefield | Soccer Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1a1a1a;
+      background: #fafaf8;
+      line-height: 1.7;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ── Color Palette ── */
+    :root {
+      --navy: #1e3a5f;
+      --navy-light: #2a4f7a;
+      --gold: #c8963e;
+      --gold-soft: #d4a85a;
+      --cream: #fafaf8;
+      --warm-gray: #f3f1ed;
+      --text: #1a1a1a;
+      --text-mid: #4a4a4a;
+      --text-light: #777;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250, 250, 248, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s;
+    }
+    .nav.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.06); }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+    }
+    .nav-name {
+      font-weight: 800; font-size: 1.1rem; letter-spacing: -0.03em;
+      color: var(--navy);
+    }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      font-size: 0.875rem; font-weight: 600; color: var(--text-light);
+      transition: color 0.2s; letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { color: var(--navy); }
+    .nav-socials { display: flex; gap: 1rem; align-items: center; margin-left: 2rem; }
+    .nav-socials a { color: #999; transition: color 0.2s; display: flex; }
+    .nav-socials a:hover { color: var(--navy); }
+    .nav-socials svg { width: 18px; height: 18px; }
+
+    /* Mobile hamburger */
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger svg { width: 24px; height: 24px; color: var(--navy); }
+
+    /* ── Sections ── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding-top: 64px;
+      background: var(--cream);
+    }
+    .hero-content {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .hero-text h1 {
+      font-size: 3.4rem; font-weight: 800; line-height: 1.08;
+      letter-spacing: -0.04em; color: var(--navy); margin-bottom: 0.6rem;
+    }
+    .hero-subtitle {
+      font-size: 1.2rem; font-weight: 600; color: var(--gold);
+      letter-spacing: 0.04em; margin-bottom: 1.5rem;
+    }
+    .hero-tagline {
+      font-size: 1.1rem; font-weight: 400; color: var(--text-mid);
+      margin-bottom: 2rem; line-height: 1.7;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; font-weight: 700; color: #fff;
+      background: var(--navy); padding: 0.75rem 1.8rem;
+      border-radius: 6px; transition: all 0.2s;
+      border: 2px solid var(--navy);
+    }
+    .hero-cta:hover { background: var(--navy-light); border-color: var(--navy-light); }
+    .hero-cta-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; font-weight: 700; color: var(--navy);
+      background: transparent; padding: 0.75rem 1.8rem;
+      border-radius: 6px; transition: all 0.2s;
+      border: 2px solid var(--navy); margin-left: 0.75rem;
+    }
+    .hero-cta-secondary:hover { background: var(--navy); color: #fff; }
+    .hero-photo {
+      width: 100%; max-width: 380px; aspect-ratio: 4/5;
+      border-radius: 12px; object-fit: cover; object-position: top;
+      justify-self: center;
+      box-shadow: 0 20px 60px rgba(30, 58, 95, 0.15);
+    }
+
+    /* ── About ── */
+    .about { background: #fff; }
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 2rem; color: var(--navy);
+    }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+    }
+    .about-text p {
+      color: var(--text-mid); margin-bottom: 1.2rem; font-size: 1rem;
+    }
+    .about-highlights {
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    .highlight {
+      padding: 1.4rem 1.5rem; background: var(--warm-gray); border-radius: 8px;
+      border-left: 3px solid var(--gold);
+    }
+    .highlight-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.25rem;
+    }
+    .highlight-value {
+      font-size: 0.95rem; font-weight: 500; color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* ── Action Banner ── */
+    .action-banner {
+      position: relative; height: 520px; overflow: hidden;
+      background: var(--navy);
+    }
+    .action-banner img {
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center 40%;
+      opacity: 0.4;
+    }
+    .action-banner-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: flex-end; justify-content: flex-start;
+      padding: 3rem 4rem;
+    }
+    .action-banner-text {
+      font-size: 1.5rem; font-weight: 700; color: #fff;
+      letter-spacing: -0.02em; max-width: 500px; line-height: 1.4;
+    }
+    .action-banner-text span { color: var(--gold-soft); }
+
+    /* ── Projects ── */
+    .projects { background: var(--cream); }
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+    .project-card {
+      background: #fff; border-radius: 10px; overflow: hidden;
+      border: 1px solid #e8e6e1; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .project-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(30, 58, 95, 0.1);
+    }
+    .project-img {
+      width: 100%; aspect-ratio: 16/10; object-fit: cover;
+      background: var(--warm-gray);
+    }
+    .project-body { padding: 1.5rem; }
+    .project-tag {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.5rem;
+    }
+    .project-title {
+      font-size: 1.15rem; font-weight: 700; color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+    .project-desc {
+      font-size: 0.88rem; color: var(--text-mid); line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+    .project-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.85rem; font-weight: 700; color: var(--navy);
+      transition: gap 0.2s;
+    }
+    .project-link:hover { gap: 0.7rem; color: var(--gold); }
+    .project-link svg { width: 14px; height: 14px; }
+
+    /* ── Contact ── */
+    .contact {
+      background: var(--navy); color: #fff;
+      text-align: center; padding: 5rem 2rem;
+    }
+    .contact .section-label { color: var(--gold-soft); }
+    .contact .section-title { color: #fff; }
+    .contact-text {
+      font-size: 1.05rem; color: rgba(255,255,255,0.6); max-width: 520px;
+      margin: 0 auto 2rem; line-height: 1.7;
+    }
+    .contact-email {
+      font-size: 1.3rem; font-weight: 700; color: #fff;
+      border-bottom: 2px solid var(--gold); padding-bottom: 2px;
+      transition: color 0.2s;
+    }
+    .contact-email:hover { color: var(--gold-soft); }
+    .contact-socials {
+      display: flex; justify-content: center; gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    .contact-socials a {
+      color: rgba(255,255,255,0.4); transition: color 0.2s; display: flex;
+    }
+    .contact-socials a:hover { color: #fff; }
+    .contact-socials svg { width: 20px; height: 20px; }
+
+    /* ── Footer ── */
+    .footer {
+      background: var(--navy); border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 1.5rem 2rem; text-align: center;
+    }
+    .footer p { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .nav-links, .nav-socials { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: rgba(250,250,248,0.98); padding: 1.5rem 2rem;
+        border-bottom: 1px solid #eee; gap: 1rem;
+      }
+      .hamburger { display: block; }
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-text h1 { font-size: 2.4rem; }
+      .hero-photo { max-width: 260px; justify-self: center; order: -1; }
+      .hero-cta, .hero-cta-secondary { margin: 0.4rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .action-banner { height: 320px; }
+      .action-banner-text { font-size: 1.1rem; }
+      .action-banner-overlay { padding: 2rem; }
+      section { padding: 4rem 1.5rem; }
+    }
+
+    /* ── Fade-in animation ── */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-name">Lucas Morefield</a>
+      <div class="nav-links" id="navLinks">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="nav-socials" id="navSocials">
+        <!-- LinkedIn -->
+        <a href="https://www.linkedin.com/in/lucas-morefield" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <!-- Bluesky -->
+        <a href="https://bsky.app/profile/morefie.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.5 14.5c-1.5 1-3.5 1.5-4.5 1.5s-3-0.5-4.5-1.5C6 15.5 5.5 14 6 12.5c.5-1.5 2-3 3.5-4.5C11 6.5 11.5 6 12 5.5c.5.5 1 1 2.5 2.5 1.5 1.5 3 3 3.5 4.5.5 1.5 0 3-1.5 4z"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/morefieldgoalkeeping/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Lucas<br>Morefield</h1>
+          <p class="hero-subtitle">Soccer Analytics & Strategy</p>
+          <p class="hero-tagline">Former professional goalkeeper turned CPA, working to earn a place in the soccer industry. I build data projects that ask better questions about the beautiful game: how clubs build rosters, value players, and spend smarter.</p>
+          <div>
+            <a href="#projects" class="hero-cta">
+              View My Work
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#contact" class="hero-cta-secondary">Get in Touch</a>
+          </div>
+        </div>
+        <img src="images/Headshot.jpg" alt="Lucas Morefield" class="hero-photo">
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about" id="about">
+    <div class="container fade-in">
+      <p class="section-label">About</p>
+      <h2 class="section-title">Where the pitch meets the spreadsheet.</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>I grew up with a ball at my feet and numbers in my head. I played goalkeeper at IU Indianapolis, where I captained the team twice and graduated from the Kelley School of Business. After college, I signed professionally with Michigan Stars FC in NISA, attending combines, working with agents, and living the reality of American professional soccer.</p>
+          <p>That experience shaped what I want to do next. I saw firsthand how front office decisions ripple through a roster, and I became obsessed with the data behind those decisions. Now I combine my business and finance background with skills in Tableau, Power BI, SQL, and Python to explore questions about player valuation, roster construction, and club strategy. I published a piece on American Soccer Analysis examining how goalkeeper performance translates into real financial and sporting value for MLS clubs.</p>
+          <p>By day, I work as an audit associate at Forvis Mazars, where I analyze financials and work on audits for complex clients across industries, including engagements involving business combinations, foreign currency translation, and intricate data sets. I am on track to earn my CPA license in May 2026. Outside of work, I run goalkeeper sessions at Sporting Springfield and volunteer with Missouri State University's program, analyzing film, preparing for matches, and staying embedded in the game I love.</p>
+        </div>
+        <div class="about-highlights">
+          <div class="highlight">
+            <p class="highlight-label">Education</p>
+            <p class="highlight-value">BS in Accounting & Finance, Kelley School of Business, IU Indianapolis</p>
+          </div>
+          <div class="highlight">
+            <p class="highlight-label">Playing Experience</p>
+            <p class="highlight-value">Michigan Stars FC (NISA) · IU Indianapolis (NCAA D1) · St. Charles FC (USL2)</p>
+          </div>
+          <div class="highlight">
+            <p class="highlight-label">Published Work</p>
+            <p class="highlight-value">American Soccer Analysis: Measuring Goalkeeper Impact in MLS</p>
+          </div>
+          <div class="highlight">
+            <p class="highlight-label">Credentials</p>
+            <p class="highlight-value">CPA Candidate: All 4 exams passed, licensure projected May 2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Action Photo Banner -->
+  <div class="action-banner">
+    <img src="images/Soccer Action.jpg" alt="Lucas Morefield in action as a goalkeeper">
+    <div class="action-banner-overlay">
+      <p class="action-banner-text">Built on the field. <span>Driven by the data.</span></p>
+    </div>
+  </div>
+
+  <!-- Projects -->
+  <section class="projects" id="projects">
+    <div class="container fade-in">
+      <p class="section-label">Projects</p>
+      <h2 class="section-title">Data-driven work in soccer.</h2>
+      <div class="projects-grid">
+
+        <!-- ASA Article -->
+        <div class="project-card">
+          <img src="images/Measuring Goalkeeper Impact in MLS.jpg" alt="MLS Goalkeeper Analysis" class="project-img">
+          <div class="project-body">
+            <p class="project-tag">Published Work</p>
+            <p class="project-title">Measuring Goalkeeper Impact in MLS</p>
+            <p class="project-desc">A data-driven look at how goalkeeper performance, salary, and positional volatility affect MLS standings. Published on American Soccer Analysis, exploring the financial and sporting value of the most undervalued position on the field.</p>
+            <a href="https://www.americansocceranalysis.com/home/2026/1/14/measuring-goalkeeper-impact-in-mls-a-data-driven-look-at-value-volatility-and-efficiency" target="_blank" rel="noopener" class="project-link">
+              Read on ASA
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- MLS Inflection Point -->
+        <div class="project-card">
+          <img src="images/Transfer Market Evaluation.webp" alt="MLS At the Inflection Point" class="project-img">
+          <div class="project-body">
+            <p class="project-tag">Research</p>
+            <p class="project-title">MLS: At the Inflection Point</p>
+            <p class="project-desc">A collaborative research project analyzing how Major League Soccer will evolve over the next few years, driven by catalysts including the schedule realignment, 2026 World Cup, and Apple TV broadcast deal.</p>
+            <a href="https://footycollective.github.io/mls-growth/" target="_blank" rel="noopener" class="project-link">
+              Explore the Project
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Substack Expansion -->
+        <div class="project-card">
+          <img src="images/Behind the Numbers.jpg" alt="Behind the Numbers Analysis" class="project-img">
+          <div class="project-body">
+            <p class="project-tag">Writing</p>
+            <p class="project-title">Behind the Numbers: Goalkeeper Data Deep Dive</p>
+            <p class="project-desc">Expanding on the ASA research with deeper analysis of post-shot expected goals, market value dynamics, and what the data reveals about how clubs should think about investing in their goalkeepers.</p>
+            <a href="https://lucasmorefield.substack.com/p/behind-the-numbers-what-goalkeeper" target="_blank" rel="noopener" class="project-link">
+              Read on Substack
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="container fade-in">
+      <p class="section-label">Contact</p>
+      <h2 class="section-title">Let's talk soccer.</h2>
+      <p class="contact-text">I am always open to conversations about the game, whether it's analytics, roster strategy, or opportunities in the soccer industry. Reach out and let's connect.</p>
+      <a href="mailto:morefieldlucas@gmail.com" class="contact-email">morefieldlucas@gmail.com</a>
+      <div class="contact-socials">
+        <a href="https://www.linkedin.com/in/lucas-morefield" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="https://bsky.app/profile/morefie.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.5 14.5c-1.5 1-3.5 1.5-4.5 1.5s-3-0.5-4.5-1.5C6 15.5 5.5 14 6 12.5c.5-1.5 2-3 3.5-4.5C11 6.5 11.5 6 12 5.5c.5.5 1 1 2.5 2.5 1.5 1.5 3 3 3.5 4.5.5 1.5 0 3-1.5 4z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/morefieldgoalkeeping/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2026 Lucas Morefield</p>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Mobile menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close mobile menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
